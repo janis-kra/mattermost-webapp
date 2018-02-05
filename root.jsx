@@ -16,7 +16,10 @@ import {makeAsyncComponent} from 'components/async_load';
 import store from 'stores/redux_store.jsx';
 import loadRoot from 'bundle-loader?lazy!components/root.jsx';
 
+import {initFeedback} from './feedback';
+
 const Root = makeAsyncComponent(loadRoot);
+const feedback = initFeedback();
 
 // This is for anything that needs to be done for ALL react components.
 // This runs before we start to render anything.
@@ -74,7 +77,30 @@ function appendOnLoadEvent(fn) {
     }
 }
 
+/**
+ * @param {MouseEvent} e the mouse event that was clicked
+ */
+function clickTracker(e) {
+    feedback({
+        click: {
+            x: e.x,
+            y: e.y,
+            target: e.target.id || e.target.localName
+        },
+        screen: {
+            height: e.view.innerHeight,
+            width: e.view.innerWidth
+        },
+        owner: e.target.ownerDocument.URL
+    });
+}
+
+function clickTrackingSetup() {
+    document.addEventListener('click', clickTracker);
+}
+
 appendOnLoadEvent(() => {
     // Do the pre-render setup and call renderRootComponent when done
     preRenderSetup(renderRootComponent);
 });
+appendOnLoadEvent(clickTrackingSetup);
