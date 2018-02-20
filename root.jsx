@@ -85,14 +85,38 @@ function clickTracker(e) {
         click: {
             x: e.x,
             y: e.y,
-            target: e.target.id || e.target.localName
+            target: {
+                id: getMostSpecific('id', e.target),
+                class: getMostSpecific('className', e.target),
+                name: e.target.localName,
+                text: e.target.textContent
+            }
         },
         screen: {
             height: e.view.innerHeight,
             width: e.view.innerWidth
         },
         owner: e.target.ownerDocument.URL
-    });
+    }, 'UserClicked');
+}
+
+/**
+ * Get the desired attribute of the targeted node, or if the attribute is
+ * not present, the attribute of one of its parent nodes
+ * @param {EventTarget} target the targeted DOM node
+ * @return the desired attribute, or undefined if neither the target nor
+ * one of the parent nodes has this attribute
+ */
+function getMostSpecific(attribute, target) {
+    let attr;
+    let t = target;
+    while (!attr && t) {
+        if (t[attribute]) {
+            attr = t[attribute];
+        }
+        t = t.parentNode;
+    }
+    return attr;
 }
 
 function clickTrackingSetup() {

@@ -13,6 +13,10 @@ import * as GlobalActions from 'actions/global_actions.jsx';
 import SidebarChannelButtonOrLink from '../sidebar_channel_button_or_link/sidebar_channel_button_or_link.jsx';
 import SidebarTutorialTip from '../sidebar_tutorial_tip.jsx';
 
+import {initFeedback} from '../../../feedback';
+
+const feedback = initFeedback();
+
 export default class SidebarChannel extends React.PureComponent {
     static propTypes = {
 
@@ -180,6 +184,12 @@ export default class SidebarChannel extends React.PureComponent {
 
     handleSelectChannel = () => {
         const {actions, channelId} = this.props;
+        feedback({
+            via: 'Sidebar',
+            channel: {
+                id: channelId
+            }
+        }, 'ChannelSwitched');
         actions.keepChanneIdAsUnread(this.isChannelUnread() ? channelId : null, this.props.unreadMentions > 0);
     };
 

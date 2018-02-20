@@ -21,8 +21,11 @@ import {ActionTypes, Constants} from 'utils/constants.jsx';
 import {EMOJI_PATTERN} from 'utils/emoticons.jsx';
 import * as UserAgent from 'utils/user_agent';
 
+import {initFeedback} from '../feedback';
+
 const dispatch = store.dispatch;
 const getState = store.getState;
+const feedback = initFeedback();
 
 export function handleNewPost(post, msg) {
     let websocketMessageProps = {};
@@ -37,6 +40,7 @@ export function handleNewPost(post, msg) {
     }
 
     if (msg && msg.data) {
+        feedback({msg, post}, 'PostCreated');
         if (msg.data.channel_type === Constants.DM_CHANNEL) {
             loadNewDMIfNeeded(post.channel_id);
         } else if (msg.data.channel_type === Constants.GM_CHANNEL) {

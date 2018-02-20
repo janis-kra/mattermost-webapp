@@ -26,8 +26,11 @@ import EmojiIcon from 'components/svg/emoji_icon';
 import Textbox from 'components/textbox.jsx';
 import TutorialTip from 'components/tutorial/tutorial_tip.jsx';
 
+import {initFeedback} from '../../feedback';
+
 const TutorialSteps = Constants.TutorialSteps;
 const KeyCodes = Constants.KeyCodes;
+const feedback = initFeedback();
 
 export default class CreatePost extends React.Component {
     static propTypes = {
@@ -323,6 +326,14 @@ export default class CreatePost extends React.Component {
 
     handleSubmit = (e) => {
         const updateChannel = this.props.currentChannel;
+
+        if (e.charCode === 13) {
+            // sent by pressing enter
+            feedback({message: this.state.message, sentVia: 'Keyboard'}, 'MessageSent');
+        } else {
+            // sent via mouse
+            feedback({message: this.state.message, sentVia: 'Sendbutton'}, 'MessageSent');
+        }
 
         if ((PostUtils.containsAtMention(this.state.message, '@all') || PostUtils.containsAtMention(this.state.message, '@channel')) && this.props.currentChannelMembersCount > Constants.NOTIFY_ALL_MEMBERS && window.mm_config.EnableConfirmNotificationsToChannel === 'true') {
             this.showNotifyAllModal();

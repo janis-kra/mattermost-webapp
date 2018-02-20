@@ -23,7 +23,11 @@ import NewChannelFlow from '../new_channel_flow.jsx';
 import SidebarHeader from '../sidebar_header.jsx';
 import UnreadChannelIndicator from '../unread_channel_indicator.jsx';
 
+import {initFeedback} from '../../feedback';
+
 import SidebarChannel from './sidebar_channel';
+
+const feedback = initFeedback();
 
 export default class Sidebar extends React.PureComponent {
     static propTypes = {

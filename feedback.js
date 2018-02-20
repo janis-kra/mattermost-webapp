@@ -1,16 +1,18 @@
-const STANDARD_URL = 'http://127.0.0.1:2113/streams/mattermost-clicks';
+const STANDARD_STREAM = 'mattermost';
+const STANDARD_URL = 'http://127.0.0.1:2113/streams';
 
-function initFeedback(url) {
-    return createFeedbackFun(url || STANDARD_URL);
+function initFeedback(url, stream) {
+    return createFeedbackFun(`${url || STANDARD_URL}/${stream || STANDARD_STREAM}`);
 }
 
 function createFeedbackFun(url) {
-    return function feedback(data) {
+    return function feedback(data, eventType) {
         data['@timestamp'] = new Date().toISOString();
+        data.user = {id: '1337'}; // TODO should contain anonymized user data
         var xhr = new XMLHttpRequest();
         xhr.open('post', url);
         xhr.setRequestHeader('Content-type', 'application/json');
-        xhr.setRequestHeader('ES-EventType', 'UserClicked');
+        xhr.setRequestHeader('ES-EventType', eventType);
         xhr.setRequestHeader('ES-EventId', uuidv4());
         xhr.send(JSON.stringify(data));
     };

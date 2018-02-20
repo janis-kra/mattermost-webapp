@@ -18,6 +18,10 @@ import SuggestionList from 'components/suggestion/suggestion_list.jsx';
 import SwitchChannelProvider from 'components/suggestion/switch_channel_provider.jsx';
 import SwitchTeamProvider from 'components/suggestion/switch_team_provider.jsx';
 
+import {initFeedback} from '../../feedback';
+
+const feedback = initFeedback();
+
 const getState = store.getState;
 
 const CHANNEL_MODE = 'channel';
@@ -162,6 +166,12 @@ export default class QuickSwitchModal extends React.PureComponent {
             } else {
                 this.switchToChannel(selectedChannel);
             }
+            feedback({
+                via: 'QuickSwitcher',
+                channel: {
+                    id: selectedChannel.id
+                }
+            }, 'ChannelSwitched');
         } else {
             browserHistory.push('/' + selected.name);
             this.onHide();
