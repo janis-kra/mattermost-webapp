@@ -1,3 +1,5 @@
+import UserStore from 'stores/user_store.jsx';
+
 const STANDARD_STREAM = 'mattermost';
 const STANDARD_URL = 'http://127.0.0.1:2113/streams';
 
@@ -8,7 +10,7 @@ function initFeedback(url, stream) {
 function createFeedbackFun(url) {
     return function feedback(data, eventType) {
         data['@timestamp'] = new Date().toISOString();
-        data.user = {id: '1337'}; // TODO should contain anonymized user data
+        data.user = {id: UserStore.getCurrentId() || '1'};
         var xhr = new XMLHttpRequest();
         xhr.open('post', url);
         xhr.setRequestHeader('Content-type', 'application/json');
