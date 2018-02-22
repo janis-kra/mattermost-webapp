@@ -123,8 +123,39 @@ function clickTrackingSetup() {
     document.addEventListener('click', clickTracker);
 }
 
+let scrollEvents = [];
+let scrollEventSendingInitiated = false;
+
+/**
+ * Batches all scroll events occuring within one second of the first event, then sends them as a combined WindowScrolled event
+ * @param {WheelEvent} e the wheel event
+ */
+function scrollTracker(e) {
+    scrollEvents.push(e);
+    if (!scrollEventSendingInitiated) {
+        scrollEventSendingInitiated = true;
+        setTimeout(() => {
+            const ms = scrollEvents[scrollEvents.length - 1].timeStamp - scrollEvents[0].timeStamp;
+            const delta = scrollEvents.reduce((previous, current) => {
+                return previous + Math.abs(current.deltaY);
+            }, 0);
+            scrollEvents = [];
+            feedback({
+                delta,
+                time: ms / 1000 // send time in seconds
+            }, 'WindowScrolled');
+            scrollEventSendingInitiated = false;
+        }, 1000);
+    }
+}
+
+function scrollTrackingSetup() {
+    document.addEventListener('wheel', scrollTracker);
+}
+
 appendOnLoadEvent(() => {
     // Do the pre-render setup and call renderRootComponent when done
     preRenderSetup(renderRootComponent);
 });
 appendOnLoadEvent(clickTrackingSetup);
+appendOnLoadEvent(scrollTrackingSetup);
