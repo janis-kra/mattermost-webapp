@@ -132,6 +132,7 @@ let scrollEventSendingInitiated = false;
  */
 function scrollTracker(e) {
     scrollEvents.push(e);
+    const owner = e.target.ownerDocument.URL;
     if (!scrollEventSendingInitiated) {
         scrollEventSendingInitiated = true;
         setTimeout(() => {
@@ -142,6 +143,7 @@ function scrollTracker(e) {
             scrollEvents = [];
             feedback({
                 delta,
+                owner,
                 time: ms / 1000 // send time in seconds
             }, 'WindowScrolled');
             scrollEventSendingInitiated = false;
