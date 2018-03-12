@@ -9,7 +9,7 @@ function initFeedback(url, stream) {
 
 function createFeedbackFun(url) {
     return function feedback(data, eventType) {
-        data['@timestamp'] = Date.now();
+        data.timestamp = Date.now();
         data.user = {id: UserStore.getCurrentId() || '1'};
         var xhr = new XMLHttpRequest();
         xhr.open('post', url);
