@@ -144,7 +144,7 @@ function scrollTracker(e) {
             feedback({
                 delta,
                 owner,
-                time: ms / 1000 // send time in seconds
+                duration: ms / 1000 // send time in seconds
             }, 'WindowScrolled');
             scrollEventSendingInitiated = false;
         }, 1000);
@@ -155,9 +155,21 @@ function scrollTrackingSetup() {
     document.addEventListener('wheel', scrollTracker);
 }
 
+function setupExperiment() {
+    if (!localStorage.getItem('EXPERIMENT1_GROUP')) {
+        const coinflip = Math.random();
+        const group = coinflip <= 0.5 ? 'control' : 'treatment';
+        localStorage.setItem('EXPERIMENT1_GROUP', group);
+        console.log(`Group for experiment 1 set to ${group}`);
+    } else {
+        console.log(`User already has a group: ${localStorage.getItem('EXPERIMENT1_GROUP')}`);
+    }
+}
+
 appendOnLoadEvent(() => {
     // Do the pre-render setup and call renderRootComponent when done
     preRenderSetup(renderRootComponent);
 });
 appendOnLoadEvent(clickTrackingSetup);
 appendOnLoadEvent(scrollTrackingSetup);
+appendOnLoadEvent(setupExperiment);

@@ -15,7 +15,10 @@ import {Constants, Preferences} from 'utils/constants.jsx';
 import {useSafeUrl} from 'utils/url.jsx';
 import AppIcons from 'images/appIcons.png';
 
+import {initFeedback} from '../../feedback';
+
 const NUM_SCREENS = 3;
+const feedback = initFeedback();
 
 export default class TutorialIntroScreens extends React.Component {
     static get propTypes() {
@@ -37,6 +40,10 @@ export default class TutorialIntroScreens extends React.Component {
     handleNext() {
         switch (this.state.currentScreen) {
         case 0:
+            feedback({
+                decision: 'TutorialStarted',
+                group: localStorage.getItem('EXPERIMENT1_GROUP')
+            }, 'TutorialExperimentParticipated');
             trackEvent('tutorial', 'tutorial_screen_1_welcome_to_mattermost_next');
             break;
         case 1:
@@ -62,6 +69,11 @@ export default class TutorialIntroScreens extends React.Component {
     }
     skipTutorial(e) {
         e.preventDefault();
+
+        feedback({
+            decision: 'TutorialSkipped',
+            group: localStorage.getItem('EXPERIMENT1_GROUP')
+        }, 'TutorialExperimentParticipated');
 
         switch (this.state.currentScreen) {
         case 0:
@@ -297,6 +309,7 @@ export default class TutorialIntroScreens extends React.Component {
     }
     render() {
         const screen = this.createScreen();
+        const tutorialButtonClass = localStorage.getItem('EXPERIMENT1_GROUP') === 'control' ? 'btn btn-primary' : 'btn';
 
         return (
             <div className='tutorial-steps__container'>
@@ -309,7 +322,7 @@ export default class TutorialIntroScreens extends React.Component {
                         <div className='tutorial__footer'>
                             <button
                                 id='tutorialNextButton'
-                                className='btn btn-primary'
+                                className={tutorialButtonClass}
                                 tabIndex='1'
                                 onClick={this.handleNext}
                             >
