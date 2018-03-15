@@ -1,7 +1,7 @@
 import UserStore from 'stores/user_store.jsx';
 
 const STANDARD_STREAM = 'mattermost';
-const STANDARD_URL = 'http://127.0.0.1:2113/streams';
+const STANDARD_URL = 'http://127.0.0.1:2113/streams'; // TODO: Change to http://eventstore:2113/streams
 
 function initFeedback(url, stream) {
     return createFeedbackFun(`${url || STANDARD_URL}/${stream || STANDARD_STREAM}`);

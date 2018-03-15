@@ -70,13 +70,12 @@ export default class TutorialIntroScreens extends React.Component {
     skipTutorial(e) {
         e.preventDefault();
 
-        feedback({
-            decision: 'TutorialSkipped',
-            group: localStorage.getItem('EXPERIMENT1_GROUP')
-        }, 'TutorialExperimentParticipated');
-
         switch (this.state.currentScreen) {
         case 0:
+            feedback({
+                decision: 'TutorialSkipped',
+                group: localStorage.getItem('EXPERIMENT1_GROUP')
+            }, 'TutorialExperimentParticipated');
             trackEvent('tutorial', 'tutorial_screen_1_welcome_to_mattermost_skip');
             break;
         case 1:
