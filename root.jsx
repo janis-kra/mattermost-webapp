@@ -86,8 +86,6 @@ function clickTracker(e) {
             x: e.x,
             y: e.y,
             target: {
-                id: getMostSpecific('id', e.target),
-                class: getMostSpecific('className', e.target),
                 name: e.target.localName,
                 text: e.target.textContent
             }
@@ -98,25 +96,6 @@ function clickTracker(e) {
         },
         owner: e.target.ownerDocument.URL
     }, 'UserClicked');
-}
-
-/**
- * Get the desired attribute of the targeted node, or if the attribute is
- * not present, the attribute of one of its parent nodes
- * @param {EventTarget} target the targeted DOM node
- * @return the desired attribute, or undefined if neither the target nor
- * one of the parent nodes has this attribute
- */
-function getMostSpecific(attribute, target) {
-    let attr;
-    let t = target;
-    while (!attr && t) {
-        if (t[attribute]) {
-            attr = t[attribute];
-        }
-        t = t.parentNode;
-    }
-    return attr;
 }
 
 function clickTrackingSetup() {
@@ -163,6 +142,14 @@ function setupExperiment() {
         console.log(`Group for experiment 1 set to ${group}`);
     } else {
         console.log(`User already has a group: ${localStorage.getItem('EXPERIMENT1_GROUP')}`);
+    }
+    if (!localStorage.getItem('AA_GROUP')) {
+        const coinflip = Math.random();
+        const group = coinflip <= 0.5 ? 'control' : 'treatment';
+        localStorage.setItem('AA_GROUP', group);
+        console.log(`Group for AA test set to ${group}`);
+    } else {
+        console.log(`User already has a group for the AA test: ${localStorage.getItem('AA_GROUP')}`);
     }
 }
 

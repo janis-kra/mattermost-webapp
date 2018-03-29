@@ -23,6 +23,10 @@ import UserStore from 'stores/user_store.jsx';
 import * as Utils from 'utils/utils.jsx';
 import {Constants, Preferences} from 'utils/constants.jsx';
 
+import {initFeedback} from '../feedback';
+
+const feedback = initFeedback();
+
 const dispatch = store.dispatch;
 const getState = store.getState;
 
@@ -592,6 +596,9 @@ export async function createUserWithInvite(user, data, emailHash, inviteId, succ
 }
 
 export async function webLogin(loginId, password, token, success, error) {
+    feedback({
+        group: localStorage.getItem('AA_GROUP')
+    }, 'NullHypothesis');
     const {data: ok, error: err} = await UserActions.login(loginId, password, token)(dispatch, getState);
     if (ok && success) {
         success();
